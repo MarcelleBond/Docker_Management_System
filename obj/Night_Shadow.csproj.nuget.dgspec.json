@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\code\\Docker_Management_System\\Docker_Management_System.csproj": {}
+    "D:\\code\\Night_Shadow\\Night_Shadow.csproj": {}
   },
   "projects": {
-    "D:\\code\\Docker_Management_System\\Docker_Management_System.csproj": {
+    "D:\\code\\Night_Shadow\\Night_Shadow.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\code\\Docker_Management_System\\Docker_Management_System.csproj",
-        "projectName": "Docker_Management_System",
-        "projectPath": "D:\\code\\Docker_Management_System\\Docker_Management_System.csproj",
+        "projectUniqueName": "D:\\code\\Night_Shadow\\Night_Shadow.csproj",
+        "projectName": "Night_Shadow",
+        "projectPath": "D:\\code\\Night_Shadow\\Night_Shadow.csproj",
         "packagesPath": "C:\\Users\\bbdnet2134.BBDNET\\.nuget\\packages\\",
-        "outputPath": "D:\\code\\Docker_Management_System\\obj\\",
+        "outputPath": "D:\\code\\Night_Shadow\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
