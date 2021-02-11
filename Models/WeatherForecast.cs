@@ -1,6 +1,6 @@
 using System;
 
-namespace Night_Shadow
+namespace Night_Shadow.Models
 {
     public class WeatherForecast
     {
