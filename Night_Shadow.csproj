@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.0" />
+    <PackageReference Include="Okta.Sdk" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
