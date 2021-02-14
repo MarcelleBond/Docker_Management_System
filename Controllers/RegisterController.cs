@@ -13,7 +13,7 @@ namespace Night_Shadow.Controllers
 
 
     [Route("api/[controller]")]
-    public class UserController : Controller
+    public class RegisterController : Controller
     {
         [HttpPost]
         public async Task PostAsync([FromBody] Register reg)
