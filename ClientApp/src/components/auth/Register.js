@@ -2,8 +2,7 @@
 import { Redirect } from 'react-router-dom'
 import OktaAuth from '@okta/okta-auth-js'
 import { withAuth } from '@okta/okta-react'
-import config from '../../../app.config'
-import { timers } from 'jquery'
+import config from '../../app.config'
 
 export default withAuth(class RegisterPage extends React.Component {
 
@@ -30,7 +29,8 @@ export default withAuth(class RegisterPage extends React.Component {
     }
 
     async checkAuthentication() {
-        const sessionToken = await this.props.auth.getToken();
+        const sessionToken = await this.props.auth.getIdToken();
+        console.log(sessionToken)
         if (sessionToken) {
             this.setState({ sessionToken })
         }
@@ -58,7 +58,7 @@ export default withAuth(class RegisterPage extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault()
-        fetch('/api/users', {
+        fetch('/api/register', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -79,7 +79,9 @@ export default withAuth(class RegisterPage extends React.Component {
         if (this.state.registered == true) {
             return <Redirect to="/login" />
         }
-        return 
+        return (
+            <h1>Welcome to the register page!</h1>
+        )
     }
 
 })
