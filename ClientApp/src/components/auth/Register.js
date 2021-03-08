@@ -1,10 +1,8 @@
 ﻿import React from 'react'
 import { Redirect } from 'react-router-dom'
-import OktaAuth from '@okta/okta-auth-js'
-import { withAuth } from '@okta/okta-react'
-import config from '../../app.config'
+import { withOktaAuth } from '@okta/okta-react'
 
-export default withAuth(class RegisterPage extends React.Component {
+export default withOktaAuth(class RegisterPage extends React.Component {
 
     constructor(props) {
         super(props)
@@ -16,20 +14,19 @@ export default withAuth(class RegisterPage extends React.Component {
             sessionToken: null,
             registered: false
         }
-
-        this.oktaAuth = new OktaAuth({ url: config.url })
+        
         this.checkAuthentication = this.checkAuthentication.bind(this)
         this.checkAuthentication()
 
         this.handleSubmit = this.handleSubmit.bind(this)
-        this.handleFirstNameChanged = this.handleFirstNameChanged.bind(this)
-        this.handleLastNameChanged = this.handleLastNameChanged.bind(this)
+        this.handleFirstNameChange = this.handleFirstNameChange.bind(this)
+        this.handleLastNameChange = this.handleLastNameChange.bind(this)
         this.handleEmailChange = this.handleEmailChange.bind(this)
-        this.handlePasswordChanged = this.handlePasswordChanged.bind(this)
+        this.handlePasswordChange = this.handlePasswordChange.bind(this)
     }
 
     async checkAuthentication() {
-        const sessionToken = await this.props.auth.getIdToken();
+        const sessionToken = await this.props.authState.getIdToken;
         console.log(sessionToken)
         if (sessionToken) {
             this.setState({ sessionToken })
@@ -40,11 +37,12 @@ export default withAuth(class RegisterPage extends React.Component {
         this.checkAuthentication()
     }
 
-    handleFirstNameChanged(e) {
-        this.setState({ fistname: e.target.value })
+    handleFirstNameChange(e) {
+        console.log(e.target.value)
+        this.setState({ firstName: e.target.value })
     }
 
-    handleLastNameChanged(e) {
+    handleLastNameChange(e) {
         this.setState({ lastName: e.target.value })
     }
 
@@ -52,12 +50,13 @@ export default withAuth(class RegisterPage extends React.Component {
         this.setState({ email: e.target.value })
     }
 
-    handlePasswordChanged(e) {
+    handlePasswordChange(e) {
         this.setState({ password: e.target.value })
     }
 
     handleSubmit(e) {
         e.preventDefault()
+        console.log(this.state)
         fetch('/api/register', {
             method: 'POST',
             headers: {
@@ -65,23 +64,53 @@ export default withAuth(class RegisterPage extends React.Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(this.state)
-        }).then(user => {
+        }).then(async user => {
+            if (!user.ok) {
+                throw new Error("HTTP status " + await user.text());
+            }
             this.setState({ registered: true })
-        }).catch(err => console.log)
+        }).catch(err => {
+            console.log("An error occured")
+            console.log("This is the catch text",err.message)
+        })
     }
 
     render() {
-        if (this.sessionToken) {
-            this.props.auth.redirect({ sessionToken: this.state.seesionToken })
+        if (this.state.sessionToken) {
+            this.props.authState.redirect({ sessionToken: this.state.sessionToken })
             return null
         }
 
         if (this.state.registered == true) {
             return <Redirect to="/login" />
         }
-        return (
-            <h1>Welcome to the register page!</h1>
-        )
+        return(
+            <form onSubmit={this.handleSubmit} className="registration">
+              <div className="form-element">
+                <label>Email:</label>
+                <input type="email" id="email" value={this.state.email}
+                onChange={this.handleEmailChange}/>
+              </div>
+              <div className="form-element">
+                <label>First Name:</label>
+                <input type="text" id="firstName" value={this.state.firstName}
+                onChange={this.handleFirstNameChange} />
+              </div>
+              <div className="form-element">
+                <label>Last Name:</label>
+                <input type="text" id="lastName" value={this.state.lastName}
+                onChange={this.handleLastNameChange} />
+              </div>
+              <div className="form-element">
+                <label>Password:</label>
+                <input type="password" id="password" value={this.state.password}
+                onChange={this.handlePasswordChange} />
+              </div>
+              <div className="form-actions">
+                <input type="submit" id="submit" className="btn btn-primary" value="Register"/>
+              </div>
+            </form>
+          );
     }
 
 })

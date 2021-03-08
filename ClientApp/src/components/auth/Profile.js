@@ -1,16 +1,19 @@
 import React from 'react';
-import { withAuth } from "@okta/okta-react";
+import { withOktaAuth } from "@okta/okta-react";
 
 
-export default withAuth(class ProfilePage extends React.Component {
+export default withOktaAuth(class ProfilePage extends React.Component {
     constructor(props) {
         super(props);
-        this.state({ user: null })
+        this.state= { user: null }
         this.getCurrentUser = this.getCurrentUser.bind(this)
     }
 
     async getCurrentUser() {
-        this.props.auth.getUser().then(user => this.setState({ user }))
+        this.props.oktaAuth.getUser().then(user => {this.setState({ user })
+    
+        console.log(this.state.user);
+    })
     }
 
     componentDidMount() {

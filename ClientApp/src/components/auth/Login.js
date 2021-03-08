@@ -1,54 +1,79 @@
-﻿import React from 'react';
-import OkatAuth from '@okta/okta-auth-js';
-import { withAuth } from "@okta/okta-react";
+﻿import React, { Component } from 'react'
+import { withOktaAuth } from '@okta/okta-react'
 
-export default withAuth(class LoginPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            sessionToke: null,
-            error: null,
-            username: '',
-            password: ''
-        }
-
-        this.okatAuth = new OkatAuth({ url: props.baseUrl })
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleUsernameChange = this.handleUsernameChange.bind(this)
-        this.handlePasswordChange = this.handlePasswordChange.bind(this)
+export default withOktaAuth(class LoginPage extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      sessionToken: null,
+      username: '',
+      password: ''
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
-        this.okatAuth.signIn({
-            username: this.state.username,
-            password: this.state.password
-        })
-            .then(res => this.setState({
-                sessionToke: res.sessionToke
-            }))
-            .catch(err => {
-                this.setState({ error: err.message })
-                console.log(err.statusCode + "error", err)
-            })
-    }
+    this.checkAuthentication = this.checkAuthentication.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleUsernameChange = this.handleUsernameChange.bind(this)
+    this.handlePasswordChange = this.handlePasswordChange.bind(this)
+    this.checkAuthentication()
+  }
 
-    handleUsernameChange(e) {
-        this.setState({ username: e.target.value })
-    }
-
-    handlePasswordChange(e) {
-        this.setState({ password: e.tartget.value })
-    }
-
-    render() {
-        if (this.state.sessionToke) {
-            this.props.auth.redirect({ sessionToke: this.state.sessionToke })
-            return null;
-        }
-        return (
-            <h1>Welcome to the login page!</h1>
+  handleSubmit(e) {
+    e.preventDefault()
+    this.props.oktaAuth.signIn({
+      username: this.state.username,
+      password: this.state.password
+    })
+      .then(res => {
+        const sessionToken = res.sessionToken
+        console.log(sessionToken)
+        this.setState(
+          { sessionToken },
+          // sessionToken is a one-use token, so make sure this is only called once
+          () => this.props.oktaAuth.signInWithRedirect({ sessionToken })
         )
+      })
+      .catch(err => console.log('Found an error', err.message))
+  }
+
+  async checkAuthentication() {
+    const authenticated = this.props.authState.isAuthenticated;
+    if (authenticated) {
+      window.history.back();
+    }
+  }
+
+  handleUsernameChange(e) {
+    this.setState({ username: e.target.value })
+  }
+
+  handlePasswordChange(e) {
+    this.setState({ password: e.target.value })
+  }
+
+  render() {
+    if (this.props.authState.isAuthenticated) {
+      // Hide form while sessionToken is converted into id/access tokens
+      this.checkAuthentication()
     }
 
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Username:
+          <input
+            id="username" type="text"
+            value={this.state.username}
+            onChange={this.handleUsernameChange} />
+        </label>
+        <label>
+          Password:
+          <input
+            id="password" type="password"
+            value={this.state.password}
+            onChange={this.handlePasswordChange} />
+        </label>
+        <input id="submit" type="submit" value="Submit" />
+      </form>
+    )
+  }
 })

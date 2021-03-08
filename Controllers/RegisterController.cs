@@ -3,9 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Night_Shadow.Models;
 using Okta.Sdk;
-using Okta.Sdk.Configuration;
-
-
 
 
 namespace Night_Shadow.Controllers
@@ -16,22 +13,31 @@ namespace Night_Shadow.Controllers
     public class RegisterController : Controller
     {
         [HttpPost]
-        public async Task PostAsync([FromBody] Register reg)
+        public async Task<IActionResult> PostAsync([FromBody] Register reg)
         {
             var oktaClient = new OktaClient();
-            var user = await oktaClient.Users.CreateUserAsync(new CreateUserWithPasswordOptions
+            try
             {
-                Profile = new UserProfile
+                var user = await oktaClient.Users.CreateUserAsync(
+                new CreateUserWithPasswordOptions
                 {
-                    FirstName = reg.FirstName,
-                    LastName = reg.LastName,
-                    Email = reg.Email,
-                    Login = reg.Email
-                },
-                Password = reg.Password,
-                Activate = true
-            });
-
+                    Profile = new UserProfile
+                    {
+                        FirstName = reg.FirstName,
+                        LastName = reg.LastName,
+                        Email = reg.Email,
+                        Login = reg.Email
+                    },
+                    Password = reg.Password,
+                    Activate = true
+                });
+                return Created("/profile",user);
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Conflict(ex.Message);
+            }
         }
     }
 }

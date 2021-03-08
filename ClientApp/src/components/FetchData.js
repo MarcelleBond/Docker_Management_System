@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import { withOktaAuth } from "@okta/okta-react";
 
-export class FetchData extends Component {
-  static displayName = FetchData.name;
+
+export default withOktaAuth(class FetchData extends Component {
 
   constructor(props) {
     super(props);
@@ -52,8 +53,15 @@ export class FetchData extends Component {
   }
 
   async populateWeatherData() {
-    const response = await fetch('weatherforecast');
+    console.log("accessToken", this.props.authState.accessToken.accessToken)
+    const response = await fetch('weatherforecast', {
+      headers: {
+        'content-type': 'application/json',
+        Authorization: 'Bearer ' + this.props.authState.accessToken.accessToken
+      }
+    });
+    console.log(response);
     const data = await response.json();
     this.setState({ forecasts: data, loading: false });
   }
-}
+})

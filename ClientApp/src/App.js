@@ -1,31 +1,49 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router';
+import { SecureRoute, LoginCallback, Security} from "@okta/okta-react";
+import { Route, withRouter  } from 'react-router';
 import { Layout } from './components/Layout';
 import { Home } from './components/Home';
-import { FetchData } from './components/FetchData';
+import FetchData from './components/FetchData';
 import { Counter } from './components/Counter';
 import RegisterPage from './components/auth/Register';
 import LoginPage from './components/auth/Login';
 import ProfilePage from './components/auth/Profile';
 import config from './app.config';
-import { SecureRoute, ImplicitCallback  } from "@okta/okta-react";
+import { OktaAuth } from '@okta/okta-auth-js';
+
 
 import './custom.css'
 
-export default class App extends Component {
-  static displayName = App.name;
+export default withRouter (class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.onAuthRequired = this.onAuthRequired.bind(this);
+
+    this.oktaAuth = new OktaAuth({issuer:config.issuer,
+      clientId:config.client_id,
+      redirectUri:config.redirect_uri,
+      pkce: config.pkce})
+  }
+
+  onAuthRequired() {
+    this.props.history.push('/login');
+  }
 
   render () {
     return (
-      <Layout>
+      <Security oktaAuth={this.oktaAuth}
+                onAuthRequired={this.onAuthRequired}>
+        <Layout>
         <Route exact path='/' component={Home} />
-        <Route path='/counter' component={Counter} />
-        <Route path='/fetch-data' component={FetchData} />
+        <SecureRoute path='/counter' component={Counter} />
+        <SecureRoute path='/fetch-data' component={FetchData} />
         <SecureRoute path="/profile" component={ProfilePage} />
         <Route path="/login" render={() => <LoginPage baseUrl={config.url} />} />
-        <Route path="/implicit/callback" component={ImplicitCallback} />
+        <Route path="/login/callback" component={LoginCallback} />
         <Route path="/register" component={RegisterPage} />
-      </Layout>
+        </Layout>
+      </Security>
     );
   }
-}
+})

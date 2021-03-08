@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Night_Shadow
 {
@@ -22,6 +23,15 @@ namespace Night_Shadow
         {
 
             services.AddControllersWithViews();
+            services.AddAuthentication(sharedOptions =>
+                                        {
+                                            sharedOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                                            sharedOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                                        }).AddJwtBearer(options =>
+                                                        {
+                                                            options.Authority = "https://dev-27967810.okta.com/oauth2/default";
+                                                            options.Audience = "api://default";
+                                                        });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -48,8 +58,9 @@ namespace Night_Shadow
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            app.UseAuthentication();
             app.UseRouting();
-
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
