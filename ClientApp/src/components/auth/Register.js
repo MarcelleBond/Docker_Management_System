@@ -11,6 +11,7 @@ export default withOktaAuth(class RegisterPage extends React.Component {
             lastName: "",
             email: "",
             password: "",
+            nickName: "",
             sessionToken: null,
             registered: false
         }
@@ -23,11 +24,11 @@ export default withOktaAuth(class RegisterPage extends React.Component {
         this.handleLastNameChange = this.handleLastNameChange.bind(this)
         this.handleEmailChange = this.handleEmailChange.bind(this)
         this.handlePasswordChange = this.handlePasswordChange.bind(this)
+        this.handlenickNameChange = this.handlenickNameChange.bind(this)
     }
 
     async checkAuthentication() {
         const sessionToken = await this.props.authState.getIdToken;
-        console.log(sessionToken)
         if (sessionToken) {
             this.setState({ sessionToken })
         }
@@ -38,8 +39,11 @@ export default withOktaAuth(class RegisterPage extends React.Component {
     }
 
     handleFirstNameChange(e) {
-        console.log(e.target.value)
         this.setState({ firstName: e.target.value })
+    }
+
+    handlenickNameChange(e){
+        this.setState({nickName: e.target.value})
     }
 
     handleLastNameChange(e) {
@@ -90,6 +94,11 @@ export default withOktaAuth(class RegisterPage extends React.Component {
                 <label>Email:</label>
                 <input type="email" id="email" value={this.state.email}
                 onChange={this.handleEmailChange}/>
+              </div>
+              <div className="form-element">
+                <label>nickName:</label>
+                <input type="text" id="nickName" value={this.state.nickName}
+                onChange={this.handlenickNameChange} />
               </div>
               <div className="form-element">
                 <label>First Name:</label>

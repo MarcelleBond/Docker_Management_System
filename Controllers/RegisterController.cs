@@ -18,7 +18,7 @@ namespace Night_Shadow.Controllers
             var oktaClient = new OktaClient();
             try
             {
-                var user = await oktaClient.Users.CreateUserAsync(
+                IUser user = await oktaClient.Users.CreateUserAsync(
                 new CreateUserWithPasswordOptions
                 {
                     Profile = new UserProfile
@@ -26,12 +26,13 @@ namespace Night_Shadow.Controllers
                         FirstName = reg.FirstName,
                         LastName = reg.LastName,
                         Email = reg.Email,
+                        NickName = reg.NickName,
                         Login = reg.Email
                     },
                     Password = reg.Password,
                     Activate = true
                 });
-                return Created("/profile",user);
+                return Created("/profile",user.Profile);
             }
             catch (System.Exception ex)
             {
