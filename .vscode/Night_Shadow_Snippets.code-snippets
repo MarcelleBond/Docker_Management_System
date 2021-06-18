@@ -50,6 +50,36 @@
 			"}"
 		]
 	},
+	"Night Shadow DB": {
+		"scope": "csharp",
+		"prefix": "nsb",
+		"body": [
+			"using System;",
+			"",
+			"namespace Night_Shadow.DataBase",
+			"{",
+			"    public class $1",
+			"    {",
+			"",
+			"    }",
+			"}"
+		]
+	},
+	"Night Shadow Helpers": {
+		"scope": "csharp",
+		"prefix": "nsh",
+		"body": [
+			"using System;",
+			"",
+			"namespace Night_Shadow.Helpers",
+			"{",
+			"    public class $1",
+			"    {",
+			"",
+			"    }",
+			"}"
+		]
+	},
 	"Night Shadow constroller": {
 		"scope": "csharp",
 		"prefix": "nsc",
@@ -67,7 +97,7 @@
 			"{",
 			"    [Authorize]",
 			"    [ApiController]",
-			"    [Route('api/[controller]')]",
+			"    [Route(\"api/[controller]\")]",
 			"    public class $1 : ControllerBase",
 			"    {",
 			"",
@@ -77,6 +107,18 @@
 			"            _logger = logger;",
 			"        }",
 			"    }",
+			"}"
+		]
+	},
+	"Night Shadow constroller method": {
+		"scope": "csharp",
+		"prefix": "nscm",
+		"body": [
+			"[Http$1]",
+			"[Route(\"$2\")]",
+			"public async Task<IActionResult> $3()",
+			"{",
+			"",
 			"}"
 		]
 	}

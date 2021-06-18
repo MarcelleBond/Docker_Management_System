@@ -27,8 +27,9 @@ export default withOktaAuth(class RegisterPage extends React.Component {
         this.handlenickNameChange = this.handlenickNameChange.bind(this)
     }
 
-    async checkAuthentication() {
-        const sessionToken = await this.props.authState.getIdToken;
+    checkAuthentication() {
+        const sessionToken = this.props.authState.getIdToken;
+        console.log("session token: ",sessionToken)
         if (sessionToken) {
             this.setState({ sessionToken })
         }
@@ -85,7 +86,7 @@ export default withOktaAuth(class RegisterPage extends React.Component {
             return null
         }
 
-        if (this.state.registered == true) {
+        if (this.state.registered === true) {
             return <Redirect to="/login" />
         }
         return(

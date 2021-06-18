@@ -18,7 +18,7 @@ export default withOktaAuth(class NavMenu extends Component {
   }
 
 
-  async checkAuthentication() {
+  checkAuthentication() {
     const authenticated = this.props.authState.isAuthenticated;
     if (authenticated !== this.state.authenticated) {
       this.setState({ authenticated });
@@ -57,7 +57,7 @@ export default withOktaAuth(class NavMenu extends Component {
           <NavLink tag={Link} className="text-dark" to="/profile">Profile</NavLink>
         </NavItem>
         <NavItem>
-          <NavLink tag={Link} className="text-dark" onClick={this.logout} to="javascript:void(0)">Logout</NavLink>
+          <NavLink tag={Link} className="text-dark" onClick={this.logout} to="#">Logout</NavLink>
         </NavItem>
       </ul> :
       <ul className="navbar-nav flex-grow">
